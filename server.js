@@ -22,13 +22,16 @@ app.get("/video", function (req, res) {
     const contentLength = end - start + 1;
     const headers = {
         "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-        "Accept-Range": "bytes",
+        "Accept-Ranges": "bytes",
         "Content-Length": contentLength,
         "Content-Type": "video/mp4"
     }
+
     res.writeHead(206, headers)
 
-    const videStream = fs.createReadStream(video)
+    const videoStream = fs.createReadStream(videoPath, {start, end});
+
+    videoStream.pipe(res)
 })
 
 
